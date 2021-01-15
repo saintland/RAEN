@@ -17,6 +17,14 @@ grpselect(fgrp, x, y, B = 50, parallel = TRUE)
 
 \item{parallel}{whether to use multiple cores for parallel computing. Default is TRUE.}
 }
+\value{
+a list of 
+\itemize{
+\item{fselect:}{ Names of the selected variables.}
+\item{prob:}{ the generalized ridge variable importance.}
+\item{weight:}{ the inverse of the ridge variable importance.}
+}
+}
 \description{
-Perform variable selection in exclusive groups
+This is the split step, where variable in subgroups are selected
 }

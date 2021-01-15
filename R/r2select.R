@@ -7,23 +7,23 @@
 #' @param B times of bootstrap
 #' @param weight variable weight 
 #' @param prob variable selection probability
+#' @param  parallel Logical TRUE or FALSE. Whether to use multithread computing, which can save consideratable amount of time for high dimensional data. Default is TRUE.
+#' @param m the number of variables to be randomly included in the model in this step. Default is 8.  
+#' @return the estimates of variables with B bootstraps, which is a dataframe with B rows and `ncol(x)` columns.  
 #' @export 
 
-r2select<-function(x.tr, y.tr,fr, B, weight,prob, parallel=TRUE){ 
+r2select<-function(x.tr, y.tr, B, weight,prob, parallel=TRUE,m=8){ 
   if(parallel) `%mydo%` <- `%dopar%` else `%mydo%` <- `%do%`
   
   num.p<-ncol(x.tr)
-  # m=ceiling(max(num.p*fr, sqrt(num.p)) )
-  #if(num.p<6) {m=num.p} else if (num.p<11) {m=max(ceiling(num.p*fr), 6)} else {m=max(ceiling(num.p*fr), 10)}
-  m=ceiling(num.p*fr)
+  #m=ceiling(num.p*fr)
   nsize=nrow(x.tr)
   ## Bootstrap samples + random feature selection to assign weights
   
-  
-  
   ###parallel B boostrap
   parb<-grp_fun(1:B, g=20)
-  par2<-foreach(j = c(1:20), .packages=c('fastcmprsk'),.verbose=TRUE) %mydo%{  
+ j<-vector()
+  par2<-foreach::foreach(j = c(1:20), .packages=c('fastcmprsk'),.verbose=TRUE) %mydo%{  
     pargr<-parb$varname[parb$grp==j]
     optbeta1 = rep(0,num.p)
     # indexmat1 = matrix(0,B,m)

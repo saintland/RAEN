@@ -4,7 +4,7 @@
 \alias{deCorr}
 \title{De-correlating variables}
 \usage{
-deCorr(x, rho = 0.7, ngrp = floor(15 * ncol(x)/nrow(x)), ...)
+deCorr(x, rho = 0.7, ngrp = floor(15 * ncol(x)/nrow(x)))
 }
 \arguments{
 \item{x}{the predictor matrix}
@@ -12,6 +12,9 @@ deCorr(x, rho = 0.7, ngrp = floor(15 * ncol(x)/nrow(x)), ...)
 \item{rho}{the preset correlation threshold. Variables with correlation higher than rho will be separate into exclusive groups. Default is set to 0.7}
 
 \item{ngrp}{the number of blocks to separate variables}
+}
+\value{
+a dataframe of variable names `varname` and the variable subgroup membership `grp`
 }
 \description{
 Divide the highly correlated variables into exclusive groups

@@ -5,7 +5,7 @@
 \alias{mod_lsa}
 \title{Linear Approximation of the object function}
 \usage{
-mod_lsa(obj, n, type = c("lasso", "lar"))
+mod_lsa(obj, n)
 }
 \arguments{
 \item{obj}{the regression object from R output}

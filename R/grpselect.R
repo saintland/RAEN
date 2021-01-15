@@ -1,11 +1,17 @@
 #' @title grpselect
 #' @name grpselect
-#' @description Perform variable selection in exclusive groups
+#' @description This is the split step, where variable in subgroups are selected
 #' @param fgrp the variable group object from `deCorr``
 #' @param x the predictor matrix
 #' @param y a dataframe of time to event and event status. The primary outcome status is coded 1, the secondary outcome as 2, etc. The censored is coded as 0. 
 #' @param B the number of bootstraps 
 #' @param parallel whether to use multiple cores for parallel computing. Default is TRUE. 
+#' @return a list of 
+#' \itemize{
+#' \item{fselect:}{ Names of the selected variables.}
+#' \item{prob:}{ the generalized ridge variable importance.}
+#' \item{weight:}{ the inverse of the ridge variable importance.}
+#'} 
 #' @export 
 #' @rdname grpselect
 
@@ -14,7 +20,8 @@ grpselect<-function(fgrp, x,y,B=50, parallel=TRUE) {
   if(parallel) `%mydo%` <- `%dopar%` else  `%mydo%` <- `%do%`
   
   grp<-unique(fgrp$grp)
-  bt.res<-foreach(j = grp, .packages=c('fastcmprsk'), .verbose=TRUE) %mydo%{ 
+j<-vector()
+  bt.res<-foreach::foreach(j = grp, .packages=c('fastcmprsk'), .verbose=TRUE) %mydo%{ 
      
     grpvar=fgrp$varname[fgrp$grp==j]
     nvar=length(grpvar)
@@ -51,6 +58,6 @@ grpselect<-function(fgrp, x,y,B=50, parallel=TRUE) {
   fprob=as.vector(xtx%*%step1beta)*step1beta/bxtx
   fprob<-abs(fprob)
   fweight<-1/(fprob+1e-8)
-  fnorm.weight<-fweight/sum(fweight)
+  
   list(weight=fweight, prob=fprob, fselect=fselect)
 }

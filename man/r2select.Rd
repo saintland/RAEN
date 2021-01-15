@@ -4,7 +4,7 @@
 \alias{r2select}
 \title{Variable Selection with the candidate pool}
 \usage{
-r2select(x.tr, y.tr, fr, B, weight, prob, parallel = TRUE)
+r2select(x.tr, y.tr, B, weight, prob, parallel = TRUE, m = 8)
 }
 \arguments{
 \item{x.tr}{the predictor matrix}
@@ -16,6 +16,13 @@ r2select(x.tr, y.tr, fr, B, weight, prob, parallel = TRUE)
 \item{weight}{variable weight}
 
 \item{prob}{variable selection probability}
+
+\item{parallel}{Logical TRUE or FALSE. Whether to use multithread computing, which can save consideratable amount of time for high dimensional data. Default is TRUE.}
+
+\item{m}{the number of variables to be randomly included in the model in this step. Default is 8.}
+}
+\value{
+the estimates of variables with B bootstraps, which is a dataframe with B rows and `ncol(x)` columns.
 }
 \description{
 Perform variable selection with pooled candidates

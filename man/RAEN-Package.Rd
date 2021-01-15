@@ -3,7 +3,7 @@
 \docType{package}
 \name{RAEN-Package}
 \alias{RAEN-Package}
-\title{The Robust and Generalized Ensemble Approach for Variable Selection in Ultra-high Dimensions}
+\title{The Robust and Generalized Ensemble Approach for Variable Selection in High Dimensions}
 \description{
 We provide a novel solution to the variable selection problem in the ultra-high dimensional setting with a robust and generalized method
 }

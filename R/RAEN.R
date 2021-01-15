@@ -1,14 +1,24 @@
-#' @title Random Ensemble Variable Selection for Ultra-high Dimensional Data
+#' @title Random Ensemble Variable Selection for High Dimensional Data
 #' @name  RAEN
-#' @description Perform variable selection for ultra-high dimensional data
+#' @description Perform variable selection for high dimensional data
 #' @param x the predictor matrix
 #' @param y the time and status object for survival 
 #' @param B times of bootstrap
 #' @param ngrp the number of blocks to separate variables into. Default is 15*p/N, where p is the number of predictors and N is the sample size.
-#' @param  parallel Logical TRUE or FALSE. Whether to use multithread computing, which can save consideratable amount of time for high dimensional data
+#' @param  parallel Logical TRUE or FALSE. Whether to use multithread computing, which can save consideratable amount of time for high dimensional data. Default is TRUE.
 #' @param ncore Number of cores used for parallel computing, if parallel=TRUE
 #' @return a dataframe with the variable names and the regression coefficients
 #' @rdname RAEN
+#' @importFrom foreach %dopar%
+#' @importFrom foreach %do%
+#' @examples
+#'\donttest{
+#' library(RAEN)
+#' data(toydata)
+#' x=toydata[,-c(1:2)]
+#' y=toydata[,1:2]
+#' fgrp<-deCorr(x, ngrp=20)
+#' }
 #' @export
 RAEN<-function(x,y,B,ngrp=floor(15*ncol(x)/nrow(x)), parallel=TRUE, ncore=2){
   
@@ -30,17 +40,14 @@ RAEN<-function(x,y,B,ngrp=floor(15*ncol(x)/nrow(x)), parallel=TRUE, ncore=2){
 fselect<-f1p$fselect
 n.ratio<-length(fselect)/ncol(x)
 num.first<-length(fselect)
-fr= 8/num.first 
 B=500
-
-cat('\n','fraction is ', fr,'\n')
 fweight<-f1p$weight
 fprob<-f1p$prob
-est.mat<-r2select(x.tr = data[, fselect], y.tr = data[,c('time', 'cens') ], B=B, fr=fr, weight = fweight, prob=fprob)
+est.mat<-r2select(x.tr = data[, fselect], y.tr = data[,c('time', 'cens') ], B=B, weight = fweight, prob=fprob)
 
 est.mat<-data.frame(est.mat)
 colnames(est.mat)<-fselect
-stopCluster(myClust)
+parallel::stopCluster(myClust)
 
 small.cut<-1/nrow(x)
   beta.ave<-NULL
@@ -61,14 +68,15 @@ raen
 
 #' @rdname RAEN
 #' @method predict RAEN
-#' @param obj the RAEN object containing the variable selection results
+#' @param object the RAEN object containing the variable selection results
 #' @param newdata the predictor matrix for prediction
+#' @param ... other parameters to pass 
 #' @return the linear predictor of the outcome risk
 #' @export
 
-predict.RAEN<-function(obj,newdata,...) {
-  inx<-newdata[,match(obj$id, colnames(newdata))]
-  raen.lp<-as.matrix(inx)%*%as.numeric(obj$coef)
+predict.RAEN<-function(object,newdata,...) {
+  inx<-newdata[,match(object$id, colnames(newdata))]
+  raen.lp<-as.matrix(inx)%*%as.numeric(object$coef)
   raen.lp}
 
   

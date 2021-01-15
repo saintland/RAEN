@@ -3,11 +3,11 @@
 \name{RAEN}
 \alias{RAEN}
 \alias{predict.RAEN}
-\title{Random Ensemble Variable Selection for Ultra-high Dimensional Data}
+\title{Random Ensemble Variable Selection for High Dimensional Data}
 \usage{
 RAEN(x, y, B, ngrp = floor(15 * ncol(x)/nrow(x)), parallel = TRUE, ncore = 2)
 
-\method{predict}{RAEN}(obj, newdata, ...)
+\method{predict}{RAEN}(object, newdata, ...)
 }
 \arguments{
 \item{x}{the predictor matrix}
@@ -18,13 +18,15 @@ RAEN(x, y, B, ngrp = floor(15 * ncol(x)/nrow(x)), parallel = TRUE, ncore = 2)
 
 \item{ngrp}{the number of blocks to separate variables into. Default is 15*p/N, where p is the number of predictors and N is the sample size.}
 
-\item{parallel}{Logical TRUE or FALSE. Whether to use multithread computing, which can save consideratable amount of time for high dimensional data}
+\item{parallel}{Logical TRUE or FALSE. Whether to use multithread computing, which can save consideratable amount of time for high dimensional data. Default is TRUE.}
 
 \item{ncore}{Number of cores used for parallel computing, if parallel=TRUE}
 
-\item{obj}{the RAEN object containing the variable selection results}
+\item{object}{the RAEN object containing the variable selection results}
 
 \item{newdata}{the predictor matrix for prediction}
+
+\item{...}{other parameters to pass}
 }
 \value{
 a dataframe with the variable names and the regression coefficients
@@ -32,5 +34,14 @@ a dataframe with the variable names and the regression coefficients
 the linear predictor of the outcome risk
 }
 \description{
-Perform variable selection for ultra-high dimensional data
+Perform variable selection for high dimensional data
+}
+\examples{
+\donttest{
+library(RAEN)
+data(toydata)
+x=toydata[,-c(1:2)]
+y=toydata[,1:2]
+fgrp<-deCorr(x, ngrp=20)
+}
 }

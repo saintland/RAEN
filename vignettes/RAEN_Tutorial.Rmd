@@ -1,0 +1,66 @@
+---
+title: "A Robust And Generalized Variable Selection Method (RAEN) For High Dimensional Competing Risk Analysis"
+authors: Han Sun (han.sunny@gmail.com) and XiaoFeng Wang (xfwang@gmail.com)
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{RAEN_Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+We propose a novel method, the Random Approximate Elastic Net (RAEN), with a robust and generalized solution to the variable selection problem focused on the competing risk analysis. RAEN is composed of three stages. (1) _split variables_. We randomly split the high dimensional data set into a number of lower dimensional, low correlation subsets with a de-correlation splitting algorithm. (2)  _prescreen and estimate variable importance_. For each subgroup of variables, a penalized  model is fit by minimizing the least square approximation of an elastic net objective function to many bootstrap samples. We screen relevant variables from each of the subgroups based on the bootstrap aggregation. A measure of importance is yielded from this step for each selected variable. (3) _merge, select and estimate variables_. We merge the screened variables from step 2 to one data set and perform another bootstrap aggregated penalized model fitting. 
+Although we focus on competing risks analysis, the approach proposed can be applied to most of common regression models, including generalized linear models, Cox regression, quantile regression, and many others as special cases. Our algorithm naturally has a parallel structure, thus it can be easily implemented in a parallel architecture and applied to high or ultra-high dimensional problems with tens of thousands or more of predictors.
+
+# Installation
+RAEN can be installed from R-CRAN
+```{r eval=F}
+install.packages('RAEN')
+```
+Users can install the developmental version from Github.
+```{r eval=F}
+library(devtools)
+install_github('saintland/RAEN')
+```
+# Splitting correlated variables
+
+The simulated data `toydata` contains 200 rows, time to event, censoring status, and 1000 predictors, 60 of which are true predictors ($X1-X20$ and $X40-X80$). The variable correlation blocks are identified as the following example. 
+```{r}
+require(RAEN,quietly = T)
+data(toydata)
+x=toydata[,-c(1:2)]
+y=toydata[,1:2]
+fgrp<-deCorr(x)
+
+```
+RAEN discovers 5 groups of correlated variables, with group sizes ranging from 2 to 19. Users can either determine the number of subgroups (`ngrp`) to separate the correlated variables, or use the default setting $15p/n$. The correlated variables and the remaining weakly correlated variables will be separated randomly into different subsets or blocks, such that each subset is weakly correlated. The benefit of this de-correlation is that the penalization based variable selection method (like Lasso) will not randomly drop correlated variables in such subsets. The variable selection is executed via the functions `grpselect` and `r2select`. Users can call the main function `RAEN` to run the whole process,
+
+```{r eval=F}
+library(RAEN)
+myres<-RAEN(x,y, B = 50, ncore=30)
+```
+where `x` is the predictor matrix of $n \times p$, `y` is the time and censoring status data frame, and `ncore` is the number of threads to use for parallel processing. The selected variables and the regression coefficients are returned.
+
+```
+  id        coef
+ x1 -0.21695698
+ x2 -0.41486949
+ x3 -0.21307438
+ x4 -0.05911834
+...
+...
+ x75 -0.3823193
+ x76 -0.6026619
+ x77 -0.2440929
+ x78 -0.3976471
+ x80 -0.3249638
+```
+

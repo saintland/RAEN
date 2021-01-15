@@ -3,8 +3,10 @@
 #' @description Linear Approximation of the object function
 #' @param obj the regression object from R output
 #' @param n the sample size 
+#' @import lars
+#' @importFrom stats as.formula coef cor vcov
 #' @rdname lossTransform
-mod_lsa <- function(obj,n, type = c("lasso", "lar"))
+mod_lsa <- function(obj,n)
 {
   
   if(class(obj)[1]=='coxph'|class(obj)=='fcrr') intercept <- 0
@@ -45,7 +47,7 @@ grp_fun<-function(pmat, g) {
   {cgrp<-data.frame(varname=pmat[(m*k-k+1): (m*k)] , grp=m)
   xgrp<-rbind(xgrp, cgrp)}
   remain<-px-k*g
-  cat('\nRemaining ',remain,' variables\n')
+  #cat('\nRemaining ',remain,' variables\n')
   if(px>k*g) {
     
     dgrp<-data.frame(varname=pmat[(k*g+1):px] , grp=sample(1:g, size=remain))

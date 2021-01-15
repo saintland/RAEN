@@ -1,3 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.Rhistory$
+\.git
+^README\.md$
+\.gitignore
+Makefile
+^LICENSE\.md$
+^\.github$
