@@ -66,10 +66,10 @@ process,
 
 ``` r
 library(RAEN)
-myres<-RAEN(x,y, B = 50)
+myres<-RAEN(x,y, B = 50, ncore=3)
 ```
 
-where `x` is the predictor matrix of \(n \times p\), `y` is the time and
+where `x` is the `n`x`p` predictor matrix, `y` is the time and
 censoring status data frame, and `ncore` is the number of threads to use
 for parallel processing. The selected variables and the regression
 coefficients are returned.
