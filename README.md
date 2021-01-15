@@ -1,7 +1,7 @@
 README
 ================
 
-# The Random Ensemble Variable Selection Method
+# RAEN: A Robust and Generalized Variable Selection Method for High-Dimensional Data
 
 The Proportional Subdistribution Hazard (PSH) model has been popular for
 estimating the effects of the covariates on the cause of interest in
